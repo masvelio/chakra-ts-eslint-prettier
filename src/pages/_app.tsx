@@ -1,14 +1,41 @@
-import { ChakraProvider } from "@chakra-ui/react";
+import { trackPageview } from "analytics/track-event"
+import { DefaultSeo } from "next-seo"
+import Head from "next/head"
+import Router, { useRouter } from "next/router"
+import React from "react"
+import { ChakraProvider } from "@chakra-ui/react"
+import theme from "../theme"
+import FontFace from "components/font-face"
+import { getSeo } from "utils/seo"
 
-import theme from "../theme";
-import { AppProps } from "next/app";
+Router.events.on("routeChangeComplete", (url) => {
+  trackPageview(url)
+})
 
-function MyApp({ Component, pageProps }: AppProps) {
+const App = ({ Component, pageProps }) => {
+  // Omit og:image in Docs pages.
+  // It currently doesn't add any value and clutters discussions.
+  const { pathname } = useRouter()
+  const isDocsPage = pathname.startsWith("/docs/")
+  const seo = getSeo({ omitOpenGraphImage: isDocsPage })
+
   return (
-    <ChakraProvider resetCSS theme={theme}>
-      <Component {...pageProps} />
-    </ChakraProvider>
-  );
+    <>
+      <Head>
+        <meta content="IE=edge" httpEquiv="X-UA-Compatible" />
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
+        <link rel="icon" type="image/png" sizes="96x96" href="/favicon.png" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://static.cloudflareinsights.com" />
+        <meta name="theme-color" content="#319795" />
+      </Head>
+      <DefaultSeo {...seo} />
+      <ChakraProvider theme={theme}>
+        <Component {...pageProps} />
+      </ChakraProvider>
+      <FontFace />
+    </>
+  )
 }
 
-export default MyApp;
+export default App

@@ -15,8 +15,15 @@
     "noUnusedParameters": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "strict": true,
-    "target": "esnext"
+    "strict": false,
+    "target": "esnext",
+    "baseUrl": ".",
+    "paths": {
+      "hooks/*": ["src/hooks/*"],
+      "components/*": ["src/components/*"],
+      "utils/*": ["src/utils/*"],
+      "analytics/*": ["src/analytics/*"]
+    }
   },
   "exclude": ["node_modules"],
   "include": ["**/*.ts", "**/*.tsx"]
